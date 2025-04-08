@@ -1,35 +1,32 @@
 import { Request, Response } from "express";
-import { Dice } from "../models/dice.model";
+import diceModel from "../models/dice.model";
 
-// Base de datos temporal (hasta que usemos una DB real)
-let diceCollection: Dice[] = [];
-
-export const getAllDice = (req: Request, res: Response):void => {
-  res.json(diceCollection);
-};
-
-export const createDice = (req: Request, res: Response):void => {
-  const { faceQty, faces } = req.body;
-
-  if (!faceQty || !Array.isArray(faces) || faces.length !== faceQty) {
-    res.status(400).json({ message: "Datos inválidos" });
-    return;
+export const createDice = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const dice = await diceModel.create(req.body);
+    res.status(201).json(dice);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error al crear el dado" });
   }
+}
 
-  const newDice: Dice = { faceQty, faces };
-  diceCollection.push(newDice);
-  
-  res.status(201).json(newDice);
-};
-
-export const getDiceById = (req: Request, res: Response):void => {
-  const index = parseInt(req.params.id);
-  
-  if (isNaN(index) || index < 0 || index >= diceCollection.length) {
-    res.status(404).json({ message: "Dado no encontrado" });
-    return; 
+export const getAllDice = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const diceList = await diceModel.find();
+    res.status(200).json(diceList);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error al obtener los dados" });
   }
+}
 
-  res.json(diceCollection[index]);
-};
-
+export const getDiceById = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const dice = await diceModel.findById(req.params.id);
+    res.status(200).json(dice);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error al obtener el dado" });
+  }
+}

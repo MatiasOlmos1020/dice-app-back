@@ -1,7 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 import { Request, Response } from "express";
-import imageModel from "../models/image.model";
 
 export const uploadImage = async (req: Request, res: Response) => {
   try {
@@ -19,15 +18,19 @@ export const uploadImage = async (req: Request, res: Response) => {
 
     const imageUrl = `/images/${fileName}`;
 
-    const image = new imageModel({
-      filename: fileName,
-      url: imageUrl,
-    });
-
-    await image.save();
-
     res.status(201).json({ url: imageUrl });
   } catch (error) {
     res.status(500).json({ message: "Error al subir la imagen" });
   }
+};
+
+export const deleteImagesByUrls = (urls: string[]): void => {
+  urls.forEach((url) => {
+    const imagePath = path.join(__dirname, '..', '..', 'public', url);
+    fs.unlink(imagePath, (err) => {
+      if (err) {
+        console.warn(`No se pudo eliminar la imagen: ${imagePath}`);
+      }
+    });
+  });
 };

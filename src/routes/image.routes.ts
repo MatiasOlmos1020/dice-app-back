@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { uploadImage } from "../controllers/image.conroller";
+import { uploadImage } from "../controllers/image.controller";
 import multer from "multer";
 import os from "os";
 

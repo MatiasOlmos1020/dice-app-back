@@ -1,26 +1,26 @@
 import { Request, Response } from "express";
 import diceModel from "../models/dice.model";
 import { deleteImagesByUrls } from "./image.controller";
+import { AuthRequest } from "../middlewares/auth.middleware";
 
-export const createDice = async (req: Request, res: Response): Promise<void> => {
+export const createDice = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const dice = await diceModel.create(req.body);
+    const dice = await diceModel.create({ ...req.body, userId: req.userId });
     res.status(201).json(dice);
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "Error al crear el dado" });
   }
 }
 
-export const getAllDice = async (req: Request, res: Response): Promise<void> => {
+export const getAllDice = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const diceList = await diceModel.find();
+    const diceList = await diceModel.find({ userId: req.userId });
     res.status(200).json(diceList);
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "Error al obtener los dados" });
   }
-}
+};
+
 
 export const getDiceById = async (req: Request, res: Response): Promise<void> => {
   try {

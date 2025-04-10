@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document, Types } from "mongoose";
 
 interface Face {
     faceNumber: number;
@@ -9,6 +9,7 @@ export interface Dice extends Document {
     name: string;
     faceQty: number;
     faces: Face[];
+    userId: Types.ObjectId;  
 }
 
 const FaceSchema = new Schema<Face>({
@@ -17,9 +18,10 @@ const FaceSchema = new Schema<Face>({
 });
 
 const DiceSchema = new Schema<Dice>({
-    name: {type: String, required: true},
+    name: { type: String, required: true },
     faceQty: { type: Number, required: true },
     faces: { type: [FaceSchema], required: true },
+    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 });
 
 export default mongoose.model<Dice>("Dice", DiceSchema);

@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import diceRoutes from "./routes/dice.routes";
 import imageRoutes from "./routes/image.routes";
+import authRoutes from "./routes/auth.routes";
 import { connectDB } from "./config/db";
 import path from "path";
 
@@ -15,6 +16,7 @@ app.use(cors());
 app.use(express.json()); // Permite recibir JSON en las requests
 app.use("/api/dice", diceRoutes);
 app.use("/api/images", imageRoutes);
+app.use('/api/auth', authRoutes);
 
 connectDB();
 

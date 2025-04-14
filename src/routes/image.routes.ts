@@ -1,12 +1,13 @@
 import { Router } from "express";
 import { uploadImage } from "../controllers/image.controller";
 import multer from "multer";
-import os from "os";
+import { storage } from "../config/cloudinary";
+import { authMiddleware } from '../middlewares/auth.middleware';
 
 const router = Router();
 
-const upload = multer({ dest: os.tmpdir() });
+const upload = multer({ storage });
 
-router.post("/", upload.single("image"), uploadImage);
+router.post("/", authMiddleware, upload.single("image") , uploadImage);
 
 export default router;

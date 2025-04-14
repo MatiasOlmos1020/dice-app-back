@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import User from '../models/user.model';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'secret-key';
+const JWT_SECRET = process.env.JWT_SECRET || 'secret-key-controller';
 
 export const register = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -53,9 +53,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       res.status(400).json({ message: 'Contraseña incorrecta' });
       return;
     }
-
     const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '7d' });
-
     res.status(200).json({
       message: 'Login exitoso',
       token,

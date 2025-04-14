@@ -1,36 +1,18 @@
-import fs from 'fs';
-import path from 'path';
 import { Request, Response } from "express";
+import { AuthRequest } from "../middlewares/auth.middleware";
 
-export const uploadImage = async (req: Request, res: Response) => {
+export const uploadImage = async (req: AuthRequest, res: Response) => {
   try {
     if (!req.file) {
       throw new Error("No se recibió ningún archivo");
     }
 
-    const tempPath = req.file.path;
-    const ext = path.extname(req.file.originalname);
-    const fileName = `${req.file.filename}-${Date.now()}${ext}`;
-    const publicPath = path.join(__dirname, '..', '..', 'public', 'images', fileName);
+    const imageUrl = (req.file as any).path; // multer-storage-cloudinary le agrega esta propiedad
+    const faceNumber = parseInt(req.body.faceNumber);
 
-    fs.copyFileSync(tempPath, publicPath);
-    fs.unlinkSync(tempPath);
-
-    const imageUrl = `/images/${fileName}`;
-
-    res.status(201).json({ url: imageUrl });
+    res.status(201).json({ imageUrl, faceNumber });
   } catch (error) {
+    console.error("Error al subir imagen:", error);
     res.status(500).json({ message: "Error al subir la imagen" });
   }
-};
-
-export const deleteImagesByUrls = (urls: string[]): void => {
-  urls.forEach((url) => {
-    const imagePath = path.join(__dirname, '..', '..', 'public', url);
-    fs.unlink(imagePath, (err) => {
-      if (err) {
-        console.warn(`No se pudo eliminar la imagen: ${imagePath}`);
-      }
-    });
-  });
 };

@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import diceModel from "../models/dice.model";
-import { deleteImagesByUrls } from "./image.controller";
 import { AuthRequest } from "../middlewares/auth.middleware";
 
 export const createDice = async (req: AuthRequest, res: Response): Promise<void> => {
@@ -47,7 +46,7 @@ export const deleteDiceById = async (req: Request, res: Response): Promise<void>
       .filter(Boolean); // Elimina null o undefined si hay
 
     // Eliminar imágenes
-    deleteImagesByUrls(imageUrls);
+    //deleteImagesByUrls(imageUrls);
 
     // Eliminar el dado
     await diceModel.findByIdAndDelete(req.params.id);
